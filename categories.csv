@@ -1,0 +1,70 @@
+categoryCode,description,code
+fire,Incêndio Habitacional,2101
+fire,Incêndio em Estacionamento de superfície,2103
+fire,Incêndio em Estacionamento de profundidade ou silo,2105
+fire,Incêndio em Serviços Administrativos,2107
+fire,Incêndio em Parque Escolar,2109
+fire,Incêndio em Hospitais e Lares de Idosos,2111
+fire,Incêndio em Espectáculos e Reuniões Públicas,2113
+fire,Incêndio em Unidades Hoteleiras e Restauração,2115
+fire,Incêndio em Áreas Comerciais e Gares de Transportes,2117
+fire,Incêndio em Áreas de Desporto e Lazer,2119
+fire,Incêndio em Museus e Galerias de Arte,2121
+fire,Incêndio em Bibliotecas e Arquivos,2123
+fire,"Incêndio Urbano em Áreas Militares, Forças de Segurança e de Socorro",2125
+fire,"Incêndio em Indústria, Oficina e Armazém",2127
+fire,Incêndio em Edifícios degradados ou devolutos,2129
+fire,Incêndio Equipamentos,2201
+fire,Incêndio Equipamentos,2203
+fire,Incêndio Rodoviário,2301
+fire,Incêndio Ferroviário,2305
+fire,Incêndio em meio Aquático,2307
+accident,Atropelamento rodoviário,2401
+accident,Colisão rodoviária,2403
+accident,Acidentes com veículos fora de estrada,2405
+accident,Despiste,2407
+accident,Atropelamento ferroviário,2411
+accident,Abalroamento ferroviário,2413
+accident,Choque entre veículos ou composições ferroviárias,2415
+accident,Descarrilamento ferroviário,2417
+accident,Naufrágio,2419
+accident,Choque aquático,2421
+accident,Choque aquático,2423
+accident,Abalroamento aquático,2425
+accident,Radiológico (em Instalações),2501
+accident,Químico (em Instalações),2503
+accident,Biológico (em Instalações),2505
+accident,Radiológico (em Trânsito),2507
+accident,Químico (em Trânsito),2509
+accident,Biológico (em Trânsito),2511
+accident,Fuga de Gás (conduta),2513
+accident,Fuga de Gás (garrafa),2515
+accident,Fuga de Gás (reservatório),2517
+fire,Incêndio em Transporte Aéreo,2303
+accident,Acidente Aéreo,2409
+accident,Queda de projectil comandado,3337
+fire,Povoamento Florestal,3101
+fire,Mato,3103
+fire,Agrícola,3105
+fire,Consolidação de Rescaldo,3107
+fire,Gestão de Combustível,3109
+fire,Queima,3111
+fire,Detritos não confinados,3201
+fire,Detritos confinados,3203
+meteo,Queda de Árvore,3301
+meteo,Corte de abastecimento de água,3303
+meteo,Corte de abastecimento eléctrico,3305
+meteo,Corte de abastecimento de gás,3307
+meteo,Desabamento de estruturas edificadas,3309
+meteo,Queda de elementos de construção em estruturas edificadas,3311
+meteo,Movimento de massa,3313
+meteo,Inundação de estruturas ou superfícies por precipitação intensa,3315
+meteo,Inundação de estruturas por água canalizada,3317
+meteo,Desentupimento / Tamponamento,3319
+meteo,Dano ou Queda de redes de fornecimento eléctrico,3321
+meteo,Dano em redes de abastecimento de água ,3323
+meteo,Dano em redes de abastecimento de gás,3325
+meteo,Dano em oleodutos e gasodutos,3327
+meteo,Queda de estruturas temporárias ou móveis,3329
+meteo,Colapso de galerias e cavidades artificiais ,3331
+meteo,Ruptura de Barragens,3333
