@@ -17,9 +17,10 @@ const formatDate = () => {
 
 class CacheService {
   static redis = null;
+  static isInitialized = false;
 
   static async init() {
-    if (this.redis) return;
+    if (this.isInitialized) return;
 
     const redisConfig = {
       host: config.redis.host,
@@ -29,35 +30,73 @@ class CacheService {
       retryStrategy: (times) => {
         const delay = Math.min(times * 50, 2000);
         return delay;
-      }
+      },
+      maxRetriesPerRequest: 3,
+      enableReadyCheck: true,
+      connectTimeout: 10000,
+      commandTimeout: 5000
     };
 
-    // Log da configuração (sem senha)
     console.log(`${formatDate()} - Configuração Redis:`, {
       ...redisConfig,
       password: '******'
     });
 
-    this.redis = new Redis(redisConfig);
+    try {
+      this.redis = new Redis(redisConfig);
 
-    this.redis.on('error', (error) => {
-      console.error(`${formatDate()} - Erro no Redis:`, error);
-    });
+      this.redis.on('error', (error) => {
+        console.error(`${formatDate()} - Erro Redis:`, error);
+      });
 
-    this.redis.on('connect', () => {
-      console.log(`${formatDate()} - Conectado ao Redis com sucesso`);
-    });
+      this.redis.on('connect', () => {
+        console.log(`${formatDate()} - Conectado ao Redis com sucesso`);
+      });
 
-    return new Promise((resolve, reject) => {
-      this.redis.on('ready', () => resolve());
-      this.redis.on('error', (err) => reject(err));
-    });
+      this.redis.on('ready', () => {
+        console.log(`${formatDate()} - Redis pronto para uso`);
+        this.isInitialized = true;
+      });
+
+      this.redis.on('close', () => {
+        console.log(`${formatDate()} - Conexão Redis fechada`);
+        this.isInitialized = false;
+      });
+
+      // Aguardar conexão estar pronta
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error('Timeout ao conectar ao Redis'));
+        }, 10000);
+
+        this.redis.on('ready', () => {
+          clearTimeout(timeout);
+          resolve();
+        });
+
+        this.redis.on('error', (err) => {
+          clearTimeout(timeout);
+          reject(err);
+        });
+      });
+
+    } catch (error) {
+      console.error(`${formatDate()} - Erro ao inicializar Redis:`, error);
+      throw error;
+    }
   }
 
   static async close() {
     if (this.redis) {
-      await this.redis.quit();
-      this.redis = null;
+      try {
+        await this.redis.quit();
+        this.redis = null;
+        this.isInitialized = false;
+        console.log(`${formatDate()} - Conexão Redis encerrada com sucesso`);
+      } catch (error) {
+        console.error(`${formatDate()} - Erro ao encerrar conexão Redis:`, error);
+        throw error;
+      }
     }
   }
 

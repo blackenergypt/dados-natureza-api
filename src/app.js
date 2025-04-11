@@ -54,13 +54,15 @@ app.use((err, req, res, next) => {
 
 // Inicialização do servidor
 const startServer = async () => {
+  let server;
+  
   try {
     // Inicializar cache
     await CacheService.init();
     
-    const server = app.listen(config.port, () => {
+    server = app.listen(config.port, '0.0.0.0', () => {
       console.log(`
-🚀 Servidor a correr em http://localhost:${config.port}
+🚀 Servidor a correr em http://0.0.0.0:${config.port}
 📊 Endpoints disponíveis:
    - GET /oc/v1/natureza
    - GET /oc/v1/natureza/:code
@@ -72,16 +74,23 @@ const startServer = async () => {
     });
 
     // Tratamento de sinais
-    const signals = ['SIGTERM', 'SIGINT'];
+    const signals = ['SIGTERM', 'SIGINT', 'SIGQUIT'];
     signals.forEach(signal => {
       process.on(signal, async () => {
         console.log(`${formatDate()} - Recebido sinal ${signal}, encerrando servidor...`);
         try {
+          if (server) {
+            await new Promise((resolve) => {
+              server.close(() => {
+                console.log(`${formatDate()} - Servidor HTTP encerrado`);
+                resolve();
+              });
+            });
+          }
+          
           await CacheService.close();
-          server.close(() => {
-            console.log(`${formatDate()} - Servidor encerrado com sucesso`);
-            process.exit(0);
-          });
+          console.log(`${formatDate()} - Servidor encerrado com sucesso`);
+          process.exit(0);
         } catch (error) {
           console.error(`${formatDate()} - Erro ao encerrar servidor:`, error);
           process.exit(1);
@@ -92,18 +101,37 @@ const startServer = async () => {
     // Tratamento de erros não capturados
     process.on('uncaughtException', (error) => {
       console.error(`${formatDate()} - Erro não capturado:`, error);
-      process.exit(1);
+      if (server) {
+        server.close(() => {
+          process.exit(1);
+        });
+      } else {
+        process.exit(1);
+      }
     });
 
     process.on('unhandledRejection', (error) => {
       console.error(`${formatDate()} - Rejeição não tratada:`, error);
-      process.exit(1);
+      if (server) {
+        server.close(() => {
+          process.exit(1);
+        });
+      } else {
+        process.exit(1);
+      }
     });
 
   } catch (error) {
     console.error(`${formatDate()} - Erro ao iniciar servidor:`, error);
-    process.exit(1);
+    if (server) {
+      server.close(() => {
+        process.exit(1);
+      });
+    } else {
+      process.exit(1);
+    }
   }
 };
 
+// Iniciar o servidor
 startServer(); 
