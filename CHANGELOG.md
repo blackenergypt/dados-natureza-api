@@ -5,6 +5,46 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.2] - 2025-04-11
+
+### Adicionado
+- Dependência `cors` para permitir requisições cross-origin
+- Dependências de desenvolvimento:
+  - `jest` para testes
+  - `nodemon` para desenvolvimento
+- Configuração de engines para Node.js >= 20.0.0
+
+### Corrigido
+- Erro de módulo não encontrado para `cors`
+- Scripts de desenvolvimento e testes
+- Configuração de dependências no package.json
+
+### Alterado
+- Estrutura de scripts no package.json
+- Configuração de ambiente de desenvolvimento
+- Documentação atualizada com novas dependências
+
+## [1.3.1] - 2025-04-11
+
+### Adicionado
+- Formato de data e hora em português (Lisboa) para todos os logs
+- Registro do IP do cliente em todas as requisições
+- Logs detalhados para operações de cache incluindo IP do cliente
+- Middleware para captura e registro do IP do cliente
+- Função centralizada de formatação de data
+
+### Corrigido
+- Padronização dos formatos de data em todos os serviços
+- Melhoria na consistência das mensagens de log
+- Ajuste no formato das chaves de cache
+- Correção no tratamento de erros com IP do cliente
+
+### Alterado
+- Estrutura dos logs para incluir data, IP e detalhes da operação
+- Mensagens de erro mais descritivas e padronizadas
+- Formato das mensagens de cache para melhor legibilidade
+- Documentação atualizada com novos formatos de log
+
 ## [1.3.0] - 2025-04-11
 
 ### Adicionado
