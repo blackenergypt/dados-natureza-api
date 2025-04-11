@@ -3,26 +3,26 @@ const router = express.Router();
 const NaturezaController = require('../controllers/naturezaController');
 const config = require('../config/config');
 
-// Middleware para logging
+// Middleware for logging
 router.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
 
-// Rotas da API
+// API routes
 router.get(`${config.apiPrefix}/natureza`, NaturezaController.getNatureza);
+router.get(`${config.apiPrefix}/natureza/:code`, NaturezaController.getByCode);
 router.get(`${config.apiPrefix}/categories`, NaturezaController.getCategories);
-
-// Rota de saúde
+router.get(`${config.apiPrefix}/search`, NaturezaController.search);
 router.get('/health', NaturezaController.getHealth);
 
-// Tratamento de erros global
+// Global error handler
 router.use((err, req, res, next) => {
-  console.error('Erro não tratado:', err);
-  res.status(500).json({ 
-    error: 'Erro interno do servidor',
-    message: err.message 
+  console.error('Unhandled error:', err);
+  res.status(500).json({
+    error: 'Internal server error',
+    message: err.message
   });
 });
 
-module.exports = router; 
+module.exports = router;

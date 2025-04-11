@@ -9,12 +9,18 @@ Esta API fornece endpoints para aceder a dados de natureza e categorias a partir
 ## 📋 Endpoints
 
 ### GET /oc/v1/natureza
-Retorna dados do ficheiro `natureza.xlsx` em formato JSON.
+Retorna todos os dados do ficheiro `natureza.xlsx` em formato JSON.
+
+### GET /oc/v1/natureza/:code
+Retorna um dado específico baseado no código fornecido.
 
 ### GET /oc/v1/categories
 Retorna dados do ficheiro `categories.csv` em formato JSON.
 
-### GET /oc/v1/health
+### GET /oc/v1/search
+Realiza uma busca nos dados de natureza.
+
+### GET /health
 Retorna o estado de saúde da API.
 
 ## 🛠️ Tecnologias
@@ -23,6 +29,7 @@ Retorna o estado de saúde da API.
 - Express.js
 - XLSX (para leitura de ficheiros Excel)
 - CSV-Parser (para leitura de ficheiros CSV)
+- Redis (para cache)
 - PNPM (gestor de pacotes)
 
 ## 🚀 Como Executar
@@ -31,10 +38,17 @@ Retorna o estado de saúde da API.
 
 - Docker
 - Docker Compose
+- Redis
 
 ### Desenvolvimento
 
 ```bash
+# Copiar arquivo de exemplo de ambiente
+cp .env.example .env
+
+# Editar .env com suas configurações
+nano .env
+
 # Iniciar ambiente de desenvolvimento
 docker-compose up dev
 ```
@@ -42,6 +56,12 @@ docker-compose up dev
 ### Produção
 
 ```bash
+# Copiar arquivo de exemplo de ambiente
+cp .env.example .env
+
+# Editar .env com suas configurações
+nano .env
+
 # Iniciar ambiente de produção
 docker-compose up app
 ```
@@ -52,21 +72,44 @@ A API estará disponível em `http://localhost:3000`
 
 ```
 .
+├── src/
+│   ├── config/
+│   │   └── config.js
+│   ├── controllers/
+│   │   └── naturezaController.js
+│   ├── routes/
+│   │   └── naturezaRoutes.js
+│   ├── services/
+│   │   ├── cacheService.js
+│   │   └── fileService.js
+│   └── app.js
+├── data/
+│   ├── natureza.xlsx
+│   └── categories.csv
 ├── Dockerfile
 ├── docker-compose.yml
-├── index.js
-├── natureza.xlsx
-├── categories.csv
 ├── package.json
+├── .env.example
 └── README.md
 ```
 
 ## 🔧 Configuração
 
-O projeto utiliza duas configurações principais:
+O projeto utiliza as seguintes configurações:
 
-1. **Desenvolvimento**: NODE_ENV=development
-2. **Produção**: NODE_ENV=production
+1. **Ambiente**:
+   - Desenvolvimento: NODE_ENV=development
+   - Produção: NODE_ENV=production
+
+2. **Redis**:
+   - REDIS_HOST=redis
+   - REDIS_PORT=6379
+   - REDIS_USER=default
+   - REDIS_PASSWORD=seu_password
+
+3. **API**:
+   - PORT=3000
+   - API_PREFIX=/oc/v1
 
 ## 📝 Ficheiros de Dados
 
@@ -75,7 +118,10 @@ O projeto utiliza duas configurações principais:
 
 ## 🔒 Segurança
 
-A API está configurada para execução em ambiente Docker, garantindo isolamento e segurança.
+- A API está configurada para execução em ambiente Docker
+- Redis com autenticação por usuário e senha
+- Isolamento de serviços
+- Cache com TTL configurável
 
 ## 📄 Licença
 
