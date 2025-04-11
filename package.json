@@ -1,11 +1,11 @@
 {
   "name": "dados-natureza-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "API para fornecer dados sobre natureza e categorias",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node index.js",
+    "start": "NODE_ENV=production node src/app.js",
+    "dev": "NODE_ENV=development node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

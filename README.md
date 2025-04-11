@@ -4,15 +4,18 @@ API para fornecer dados sobre natureza e categorias em formato JSON.
 
 ## 🚀 Sobre o Projeto
 
-Esta API fornece endpoints para aceder a dados de natureza e categorias a partir de ficheiros Excel (.xlsx) e CSV. A API está disponível em produção em [oc.codefusion.pt/api](https://oc.codefusion.pt/api).
+Esta API fornece endpoints para aceder a dados de natureza e categorias a partir de ficheiros Excel (.xlsx) e CSV. A API está disponível em produção em [data.codefusion.pt/oc/v1](https://data.codefusion.pt/oc/v1).
 
 ## 📋 Endpoints
 
-### GET /api/natureza
+### GET /oc/v1/natureza
 Retorna dados do ficheiro `natureza.xlsx` em formato JSON.
 
-### GET /api/categories
+### GET /oc/v1/categories
 Retorna dados do ficheiro `categories.csv` em formato JSON.
+
+### GET /oc/v1/health
+Retorna o estado de saúde da API.
 
 ## 🛠️ Tecnologias
 
