@@ -58,7 +58,7 @@ const startServer = async () => {
     // Inicializar cache
     await CacheService.init();
     
-    app.listen(config.port, () => {
+    const server = app.listen(config.port, () => {
       console.log(`
 🚀 Servidor a correr em http://localhost:${config.port}
 📊 Endpoints disponíveis:
@@ -70,6 +70,36 @@ const startServer = async () => {
 🌍 Ambiente: ${config.env}
 `);
     });
+
+    // Tratamento de sinais
+    const signals = ['SIGTERM', 'SIGINT'];
+    signals.forEach(signal => {
+      process.on(signal, async () => {
+        console.log(`${formatDate()} - Recebido sinal ${signal}, encerrando servidor...`);
+        try {
+          await CacheService.close();
+          server.close(() => {
+            console.log(`${formatDate()} - Servidor encerrado com sucesso`);
+            process.exit(0);
+          });
+        } catch (error) {
+          console.error(`${formatDate()} - Erro ao encerrar servidor:`, error);
+          process.exit(1);
+        }
+      });
+    });
+
+    // Tratamento de erros não capturados
+    process.on('uncaughtException', (error) => {
+      console.error(`${formatDate()} - Erro não capturado:`, error);
+      process.exit(1);
+    });
+
+    process.on('unhandledRejection', (error) => {
+      console.error(`${formatDate()} - Rejeição não tratada:`, error);
+      process.exit(1);
+    });
+
   } catch (error) {
     console.error(`${formatDate()} - Erro ao iniciar servidor:`, error);
     process.exit(1);

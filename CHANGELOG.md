@@ -5,6 +5,60 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.5] - 2025-04-11
+
+### Corrigido
+- Hotfix para erro de inicialização do servidor em ambiente Docker
+- Problema com o caminho `/app` no container
+- Tratamento de sinal SIGTERM durante a inicialização
+- Erro de comando falhado no script de inicialização
+
+### Alterado
+- Script de inicialização para lidar com erros de ambiente
+- Configuração de caminhos no container Docker
+- Tratamento de sinais de término
+- Logs de erro do npm
+
+## [1.3.4] - 2025-04-11
+
+### Adicionado
+- Logs detalhados de inicialização do servidor
+- Mensagens de status do Redis na inicialização
+- Configuração de ambiente de produção
+- Lista de endpoints disponíveis no log de inicialização
+
+### Corrigido
+- Problemas de inicialização do servidor em ambiente Docker
+- Configuração de rede entre serviços no Docker
+- Tratamento de sinais SIGTERM
+- Logs de debug do npm
+
+### Alterado
+- Mensagens de inicialização do servidor
+- Formato dos logs de configuração
+- Estrutura de inicialização da aplicação
+- Documentação de ambiente de produção
+
+## [1.3.3] - 2025-04-11
+
+### Adicionado
+- Dependência `dotenv` para gerenciamento de variáveis de ambiente
+- Configuração centralizada de ambiente no `config.js`
+- Suporte a variáveis de ambiente para Redis
+- Valores padrão para configurações críticas
+
+### Corrigido
+- Erro de módulo não encontrado para `dotenv`
+- Configuração de ambiente no Docker
+- Carregamento de variáveis de ambiente
+- Dependências faltantes no package.json
+
+### Alterado
+- Estrutura de configuração do projeto
+- Gerenciamento de variáveis de ambiente
+- Documentação de configuração
+- Scripts de inicialização
+
 ## [1.3.2] - 2025-04-11
 
 ### Adicionado
@@ -56,65 +110,4 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `/oc/v1/categories` (TTL: 1 hora)
   - `/oc/v1/search` (TTL: 1 hora)
   - `/health` (TTL: 5 minutos)
-- Arquivo `.env.example` com configurações de ambiente
-- Autenticação Redis com usuário e senha
-- Logs detalhados para operações de cache
-
-### Corrigido
-- Correção na definição dos endpoints da API
-- Ajuste nos métodos do controller para instância ao invés de estáticos
-- Correção no tratamento de erros nas rotas
-- Melhoria nas mensagens de erro em português
-- Correção na estrutura de cache para diferentes endpoints
-
-### Alterado
-- Atualização do `docker-compose.yml` para incluir serviço Redis
-- Melhoria na configuração de ambiente
-- Otimização no processamento de dados
-- Atualização da documentação com endpoints corretos
-
-## [1.2.0] - 2025-04-10
-
-### Adicionado
-- Implementação de cache com Redis
-- Serviço centralizado de cache
-- Configuração de TTL para diferentes endpoints
-- Documentação de endpoints no README
-
-### Corrigido
-- Correção no processamento de dados do Excel
-- Melhoria no tratamento de erros
-- Ajuste nas mensagens de erro em português
-
-### Alterado
-- Otimização no processamento de dados
-- Melhoria na estrutura de cache
-- Atualização da documentação
-
-## [1.1.0] - 2025-04-09
-
-### Adicionado
-- Suporte a arquivos CSV
-- Endpoint para categorias
-- Endpoint de busca
-- Health check
-- Logs detalhados
-
-### Corrigido
-- Tratamento de erros
-- Processamento de dados
-- Mensagens de erro em português
-
-### Alterado
-- Melhoria na estrutura do projeto
-- Otimização no processamento de dados
-- Atualização da documentação
-
-## [1.0.0] - 2025-04-08
-
-### Adicionado
-- Leitura de arquivos Excel
-- Endpoint para listar todos os dados
-- Endpoint para buscar por código
-- Configuração básica do projeto
-- Documentação inicial 
+- Arquivo `.env.example`

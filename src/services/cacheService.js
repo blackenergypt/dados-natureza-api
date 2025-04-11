@@ -16,7 +16,11 @@ const formatDate = () => {
 };
 
 class CacheService {
-  static init() {
+  static redis = null;
+
+  static async init() {
+    if (this.redis) return;
+
     const redisConfig = {
       host: config.redis.host,
       port: config.redis.port,
@@ -34,25 +38,32 @@ class CacheService {
       password: '******'
     });
 
-    this.client = new Redis(redisConfig);
+    this.redis = new Redis(redisConfig);
 
-    this.client.on('error', (error) => {
+    this.redis.on('error', (error) => {
       console.error(`${formatDate()} - Erro no Redis:`, error);
     });
 
-    this.client.on('connect', () => {
+    this.redis.on('connect', () => {
       console.log(`${formatDate()} - Conectado ao Redis com sucesso`);
     });
 
     return new Promise((resolve, reject) => {
-      this.client.on('ready', () => resolve());
-      this.client.on('error', (err) => reject(err));
+      this.redis.on('ready', () => resolve());
+      this.redis.on('error', (err) => reject(err));
     });
+  }
+
+  static async close() {
+    if (this.redis) {
+      await this.redis.quit();
+      this.redis = null;
+    }
   }
 
   static async get(key, clientIp = 'unknown') {
     try {
-      const value = await this.client.get(key);
+      const value = await this.redis.get(key);
       if (value) {
         console.log(`${formatDate()} - ${clientIp} - Dados obtidos do cache para a chave: ${key}`);
         return JSON.parse(value);
@@ -66,7 +77,7 @@ class CacheService {
 
   static async set(key, value, ttl = 3600, clientIp = 'unknown') {
     try {
-      await this.client.set(key, JSON.stringify(value), 'EX', ttl);
+      await this.redis.set(key, JSON.stringify(value), 'EX', ttl);
       console.log(`${formatDate()} - ${clientIp} - Dados armazenados no cache para a chave: ${key} (TTL: ${ttl}s)`);
     } catch (error) {
       console.error(`${formatDate()} - ${clientIp} - Erro ao armazenar no cache:`, error);
@@ -75,7 +86,7 @@ class CacheService {
 
   static async delete(key, clientIp = 'unknown') {
     try {
-      await this.client.del(key);
+      await this.redis.del(key);
       console.log(`${formatDate()} - ${clientIp} - Dados removidos do cache para a chave: ${key}`);
     } catch (error) {
       console.error(`${formatDate()} - ${clientIp} - Erro ao remover do cache:`, error);
@@ -84,7 +95,7 @@ class CacheService {
 
   static async clear(clientIp = 'unknown') {
     try {
-      await this.client.flushall();
+      await this.redis.flushall();
       console.log(`${formatDate()} - ${clientIp} - Cache limpo com sucesso`);
     } catch (error) {
       console.error(`${formatDate()} - ${clientIp} - Erro ao limpar cache:`, error);
