@@ -55,38 +55,70 @@ class NaturezaController {
   }
 
   // Get incident by code
-  static async getByCode(req, res) {
+  async getByCode(req, res) {
     try {
+      const cacheKey = `natureza_code_${req.params.code}`;
+      
+      // Tentar obter dados do cache
+      const cachedData = await CacheService.get(cacheKey);
+      if (cachedData) {
+        console.log('Dados obtidos do cache');
+        return res.json(cachedData);
+      }
+
+      // Se não houver cache, buscar dados
+      console.log('Buscando dados do ficheiro');
       const data = await FileService.mergeData();
       const code = req.params.code;
       const incident = data.find(item => item.code === code);
+      
       if (!incident) {
-        return res.status(404).json({ error: 'Incident not found' });
+        return res.status(404).json({ error: 'Incidente não encontrado' });
       }
+
+      // Armazenar no cache por 1 hora
+      await CacheService.set(cacheKey, incident);
+      
       res.json(incident);
     } catch (err) {
-      console.error(`Error in /oc/v1/natureza/:code: ${err.message}`);
-      res.status(500).json({ error: 'Error reading data', details: err.message });
+      console.error('Erro ao obter incidente por código:', err);
+      res.status(500).json({ error: 'Erro ao processar o incidente' });
     }
   }
 
-  // Search incidents by description
-  static async search(req, res) {
+  // Search incidents
+  async search(req, res) {
     try {
-      const data = await FileService.mergeData();
-      const query = req.query.q?.toLowerCase();
-      if (!query) {
-        return res.status(400).json({ error: 'Query parameter "q" is required' });
+      const cacheKey = `natureza_search_${JSON.stringify(req.query)}`;
+      
+      // Tentar obter dados do cache
+      const cachedData = await CacheService.get(cacheKey);
+      if (cachedData) {
+        console.log('Dados obtidos do cache');
+        return res.json(cachedData);
       }
-      const results = data.filter(item =>
-        item.description.toLowerCase().includes(query) ||
-        item.family.toLowerCase().includes(query) ||
-        item.species.toLowerCase().includes(query)
-      );
-      res.json(results);
+
+      // Se não houver cache, buscar dados
+      console.log('Buscando dados do ficheiro');
+      const data = await FileService.mergeData();
+      
+      // Filtrar dados baseado nos parâmetros de busca
+      const filteredData = data.filter(item => {
+        for (const [key, value] of Object.entries(req.query)) {
+          if (!item[key] || !item[key].toString().toLowerCase().includes(value.toLowerCase())) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      // Armazenar no cache por 1 hora
+      await CacheService.set(cacheKey, filteredData);
+      
+      res.json(filteredData);
     } catch (err) {
-      console.error(`Error in /oc/v1/search: ${err.message}`);
-      res.status(500).json({ error: 'Error searching data', details: err.message });
+      console.error('Erro ao buscar incidentes:', err);
+      res.status(500).json({ error: 'Erro ao processar a busca' });
     }
   }
 
