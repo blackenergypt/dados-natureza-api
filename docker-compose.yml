@@ -3,20 +3,20 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}"
     volumes:
       - .:/app
       - /app/node_modules
-    environment:
-      - NODE_ENV=production
+    env_file:
+      - .env
     command: pnpm start
   dev:
     build: .
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}"
     volumes:
       - .:/app
       - /app/node_modules
-    environment:
-      - NODE_ENV=development
+    env_file:
+      - .env
     command: pnpm dev 
