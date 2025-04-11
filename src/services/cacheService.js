@@ -1,69 +1,95 @@
 const Redis = require('ioredis');
 const config = require('../config/config');
 
+// Configuração do formato de data para Portugal
+const formatDate = () => {
+  const date = new Date();
+  return date.toLocaleString('pt-PT', {
+    timeZone: 'Europe/Lisbon',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+};
+
 class CacheService {
-  constructor() {
+  static init() {
     const redisConfig = {
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-      username: process.env.REDIS_USER,
-      password: process.env.REDIS_PASSWORD,
+      host: config.redis.host,
+      port: config.redis.port,
+      username: config.redis.username,
+      password: config.redis.password,
       retryStrategy: (times) => {
         const delay = Math.min(times * 50, 2000);
         return delay;
       }
     };
 
+    // Log da configuração (sem senha)
+    console.log(`${formatDate()} - Configuração Redis:`, {
+      ...redisConfig,
+      password: '******'
+    });
+
     this.client = new Redis(redisConfig);
 
-    this.client.on('error', (err) => {
-      console.error('Erro no Redis:', err);
+    this.client.on('error', (error) => {
+      console.error(`${formatDate()} - Erro no Redis:`, error);
     });
 
     this.client.on('connect', () => {
-      console.log('Conectado ao Redis com sucesso');
+      console.log(`${formatDate()} - Conectado ao Redis com sucesso`);
+    });
+
+    return new Promise((resolve, reject) => {
+      this.client.on('ready', () => resolve());
+      this.client.on('error', (err) => reject(err));
     });
   }
 
-  async get(key) {
+  static async get(key, clientIp = 'unknown') {
     try {
-      const data = await this.client.get(key);
-      return data ? JSON.parse(data) : null;
-    } catch (err) {
-      console.error(`Erro ao obter cache para chave ${key}:`, err);
+      const value = await this.client.get(key);
+      if (value) {
+        console.log(`${formatDate()} - ${clientIp} - Dados obtidos do cache para a chave: ${key}`);
+        return JSON.parse(value);
+      }
+      return null;
+    } catch (error) {
+      console.error(`${formatDate()} - ${clientIp} - Erro ao obter do cache:`, error);
       return null;
     }
   }
 
-  async set(key, value, ttl = 3600) { // TTL padrão de 1 hora
+  static async set(key, value, ttl = 3600, clientIp = 'unknown') {
     try {
       await this.client.set(key, JSON.stringify(value), 'EX', ttl);
-      return true;
-    } catch (err) {
-      console.error(`Erro ao definir cache para chave ${key}:`, err);
-      return false;
+      console.log(`${formatDate()} - ${clientIp} - Dados armazenados no cache para a chave: ${key} (TTL: ${ttl}s)`);
+    } catch (error) {
+      console.error(`${formatDate()} - ${clientIp} - Erro ao armazenar no cache:`, error);
     }
   }
 
-  async delete(key) {
+  static async delete(key, clientIp = 'unknown') {
     try {
       await this.client.del(key);
-      return true;
-    } catch (err) {
-      console.error(`Erro ao remover cache para chave ${key}:`, err);
-      return false;
+      console.log(`${formatDate()} - ${clientIp} - Dados removidos do cache para a chave: ${key}`);
+    } catch (error) {
+      console.error(`${formatDate()} - ${clientIp} - Erro ao remover do cache:`, error);
     }
   }
 
-  async clear() {
+  static async clear(clientIp = 'unknown') {
     try {
       await this.client.flushall();
-      return true;
-    } catch (err) {
-      console.error('Erro ao limpar cache:', err);
-      return false;
+      console.log(`${formatDate()} - ${clientIp} - Cache limpo com sucesso`);
+    } catch (error) {
+      console.error(`${formatDate()} - ${clientIp} - Erro ao limpar cache:`, error);
     }
   }
 }
 
-module.exports = new CacheService(); 
+module.exports = CacheService; 
