@@ -11,7 +11,7 @@ router.use((req, res, next) => {
 
 // API routes
 router.get(`${config.apiPrefix}/natureza`, (req, res) => NaturezaController.getNatureza(req, res));
-router.get(`${config.apiPrefix}/natureza/:code`, (req, res) => NaturezaController.getByCode(req, res));
+router.get(`${config.apiPrefix}/natureza/:code`, (req, res) => NaturezaController.getBycode(req, res));
 router.get(`${config.apiPrefix}/categories`, (req, res) => NaturezaController.getCategories(req, res));
 router.get(`${config.apiPrefix}/search`, (req, res) => NaturezaController.search(req, res));
 router.get('/health', (req, res) => NaturezaController.getHealth(req, res));

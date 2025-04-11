@@ -73,7 +73,7 @@ class NaturezaController {
   }
 
   // Get incident by code
-  async getByCode(req, res) {
+  async getBycode(req, res) {
     try {
       const { code } = req.params;
       const cacheKey = `natureza:${code}`;

@@ -42,7 +42,7 @@ class FileService {
       return new Promise((resolve, reject) => {
         fs.createReadStream(filePath)
           .pipe(csv({
-            headers: ['code', 'description', 'family', 'species'],
+            headers: ['categoryCode', 'description', 'code'],
             skipLines: 1 // Pula a primeira linha (cabeçalho)
           }))
           .on('data', (data) => {
